@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Sans+Thai:wght@100..900&display=swap"
+ rel="stylesheet">
+    <title>Work 2 Vue</title>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #ff0080 0%, hsl(330, 100%, 85%) 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffafdc 0%, #f975d1 100%) fixed !important;
+            min-height: 100vh;
+            font-family: "Noto Sans Thai", sans-serif !important;
+            font-optical-sizing: auto;
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px;
+            animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .question-card {
+            background: var(--card-bg) !important;
+            margin-bottom: 24px;
+            border-radius: 24px !important;
+            box-shadow: 0 8px 32px rgba(246, 255, 0, 0.05) !important;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            border: 1px solid rgba(246, 255, 0, 0.05);
+        }
+
+        .question-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(246, 255, 0, 0.05) !important;
+        }
+
+        .option-button {
+            margin: 10px 0;
+            width: 100%;
+            border-radius: 16px !important;
+            padding: 20px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            background: rgba(255, 0, 191, 0.05) !important;
+            border: 1px solid rgba(246, 255, 0, 0.05) !important;
+        }
+
+        .option-button:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 8px 25px rgba(246, 255, 0, 0.05) !important;
+            background: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        .v-btn {
+            text-transform: none !important;
+            letter-spacing: 0.5px !important;
+            font-weight: 500 !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .v-btn.primary {
+            background: var(--primary-gradient) !important;
+        }
+
+        .v-progress-linear {
+            border-radius: 12px !important;
+            height: 12px !important;
+            background: rgba(246, 255, 0, 0.05) !important;
+        }
+
+        .text-h4, .text-h5, .text-h6 {
+            font-weight: 600 !important;
+            letter-spacing: 0.5px !important;
+            color: #f954c7 !important;
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+                filter: blur(5px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        .v-chip {
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .v-list-item {
+            border-radius: 12px !important;
+            margin: 8px 0 !important;
+            transition: all 0.3s ease !important;
+            background: rgba(246, 255, 0, 0.05) !important;
+        }
+
+        .v-list-item:hover {
+            background: rgba(246, 255, 0, 0.05) !important;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <v-app>
+            <v-main>
+                
+                <v-card v-if="!isStarted" class="mx-4 my-4" style="border-radius: 12px">
+                    <v-card-title class="text-h4 justify-center text-wrap">
+                        ข้อสอบเข้า ม.1 วิชาภาษาไทย
+                    </v-card-title>
+                    <v-card-text class="text-center">
+
+                        <v-list class="mb-4">
+                                
+                        </v-list>
+                        <v-btn
+                            color="primary"
+                            x-large
+                            @click="isStarted = true"
+                            class="mt-4"
+                        >
+                            เริ่มทำแบบทดสอบ
+                        </v-btn>
+                    </v-card-text>
+                </v-card>
+
+                
+                <div v-else-if="isStarted && !isQuizComplete" class="quiz-container">
+                    <v-progress-linear
+                        :value="progressPercentage"
+                        color="#f954c7"
+                        height="10"
+                        rounded
+                        class="mb-4"
+                    ></v-progress-linear>
+
+                
+                    <v-card class="question-card" v-if="!isQuizComplete">
+                        <v-card-title class="text-h5">
+                            ข้อ {{ currentQuestionIndex + 1 }}
+                        </v-card-title>
+                        <v-card-text>
+                            <p class="text-h6 mb-4">{{ questions[currentQuestionIndex]?.title }}</p>
+                            <v-row>
+                                <v-col cols="12" v-for="(option, index) in questions[currentQuestionIndex]?.options" :key="index">
+                                    <v-btn
+                                        class="option-button"
+                                        :color="selectedAnswer === index ? '#f954c7' : ''"
+                                        @click="selectAnswer(index)"
+                                        outlined
+                                        block
+                                    >
+                                        {{ option }}
+                                    </v-btn>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                    
+                   
+                    <v-row justify="space-between" class="mt-4">
+                        <v-col cols="6" sm="auto">
+                            <v-btn
+                                color="primary"
+                                :disabled="currentQuestionIndex === 0"
+                                @click="previousQuestion"
+                                block
+                            >
+                                ย้อนกลับ
+                            </v-btn>
+                        </v-col>
+                        <v-col cols="6" sm="auto">
+                            <v-btn
+                                color="primary"
+                                @click="handleNext"
+                                :disabled="selectedAnswer === null"
+                                block
+                            >
+                                {{ isLastQuestion ? 'ส่งคำตอบ' : 'ถัดไป' }}
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                    
+                </div>
+
+                
+                <div v-else-if="isQuizComplete" class="quiz-container">
+                    <v-card class="question-card">
+                        <v-card-title class="text-h4 justify-center">ผลการทดสอบ</v-card-title>
+                        <v-card-text class="text-center">
+                            <p class="text-h5 mb-4">คะแนนของคุณ: {{ score }} / {{ questions.length }}</p>
+                            <v-row justify="center" class="mt-4">
+                                <v-col cols="auto">
+                                    <v-btn color="primary" @click="restartQuiz" class="mr-2">
+                                        ทำแบบทดสอบอีกครั้ง
+                                    </v-btn>
+
+                                </v-col>
+                            </v-row>
+
+                            <!-- หน้าเฉลย -->
+                            <v-expansion-panels class="mt-4">
+                                <v-expansion-panel v-for="(question, index) in questions" :key="index">
+                                    <v-card-title>
+                                        ข้อ {{ index + 1 }}
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <p class="mb-2">{{ question.title }}</p>
+                    
+                                            <v-list-item v-for="(option, optIndex) in question.options" :key="optIndex">
+                                                <v-list-item-content>
+                                                    <v-list-item-title 
+                                                        :class="{
+                                                            'success--text font-weight-bold': question.answer - 1 === optIndex,
+                                                            'error--text font-weight-bold': userAnswers[index] === optIndex && question.answer - 1 !== optIndex
+                                                        }"
+                                                        class="d-flex align-center justify-space-between py-2"
+                                                        :style="{
+                                                            backgroundColor: userAnswers[index] === optIndex ? 
+                                                                (question.answer - 1 === optIndex ? 'rgba(76, 175, 80, 0.1)' : 'rgba(244, 67, 54, 0.1)') : 
+                                                                'transparent',
+                                                            padding: '8px 12px',
+                                                            borderRadius: '8px'
+                                                        }"
+                                                    >
+                                                        <span>{{ option }}</span>
+                                                        <span>
+                                                            <v-icon 
+                                                                v-if="question.answer - 1 === optIndex" 
+                                                                small 
+                                                                color="success"
+                                                                class="ml-2"
+                                                            >
+                                                                mdi-check-circle
+                                                            </v-icon>
+                                                            <v-icon 
+                                                                v-if="userAnswers[index] === optIndex && question.answer - 1 !== optIndex" 
+                                                                small 
+                                                                color="error"
+                                                                class="ml-2"
+                                                            >
+                                                                mdi-close-circle
+                                                            </v-icon>
+                                                        </span>
+                                                    </v-list-item-title>
+                                                </v-list-item-content>
+                                            </v-list-item>
+                                        </v-list>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                            </v-expansion-panels>
+                        </v-card-text>
+                    </v-card>
+                </div>
+            </v-main>
+        </v-app>
+    </div>
+
+    <script>
+    new Vue({
+        el: '#app',
+        vuetify: new Vuetify(),
+        data: {
+            questions: [],
+            currentQuestionIndex: 0,
+            selectedAnswer: null,
+            score: 0,
+            userAnswers: [],
+            isQuizComplete: false,
+            showAnswers: false,
+            isStarted: false,
+            showWarning: false
+        },
+        computed: {
+            progressPercentage() {
+                return ((this.currentQuestionIndex + (this.isQuizComplete ? 1 : 0)) / this.questions.length) * 100;
+            },
+            isLastQuestion() {
+                return this.currentQuestionIndex === this.questions.length - 1;
+            }
+        },
+        methods: {
+            async loadQuestions() {
+                try {
+                    const response = await fetch('quiz2.json');
+                    this.questions = await response.json();
+                } catch (error) {
+                    console.error('Error loading questions:', error);
+                }
+            },
+            selectAnswer(index) {
+                this.selectedAnswer = index;
+                this.userAnswers[this.currentQuestionIndex] = index;
+            },
+            previousQuestion() {
+                if (this.currentQuestionIndex > 0) {
+                    this.currentQuestionIndex--;
+                    this.selectedAnswer = this.userAnswers[this.currentQuestionIndex];
+                }
+            },
+            handleNext() {
+                if (this.selectedAnswer === null) {
+                    this.showWarning = true;
+                    setTimeout(() => {
+                        this.showWarning = false;
+                    }, 3000);
+                    return;
+                }
+                this.showWarning = false;
+                this.nextQuestion();
+            },
+            nextQuestion() {
+                if (this.currentQuestionIndex < this.questions.length - 1) {
+                    this.currentQuestionIndex++;
+                    this.selectedAnswer = this.userAnswers[this.currentQuestionIndex] ?? null;
+                } else if (this.isLastQuestion) {
+                    this.calculateScore();
+                    this.isQuizComplete = true;
+                }
+            },
+            calculateScore() {
+                this.score = this.userAnswers.reduce((total, answer, index) => {
+                    return total + (answer === this.questions[index].answer - 1 ? 1 : 0);
+                }, 0);
+            },
+            restartQuiz() {
+                this.currentQuestionIndex = 0;
+                this.selectedAnswer = null;
+                this.score = 0;
+                this.userAnswers = [];
+                this.isQuizComplete = false;
+                this.showAnswers = false;
+                this.isStarted = false;
+            }
+        },
+        mounted() {
+            this.loadQuestions();
+        },
+      
+    });
+    </script>
+</body>
+</html>
