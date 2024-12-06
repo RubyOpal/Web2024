@@ -17,7 +17,6 @@
             --primary-gradient: linear-gradient(135deg, #ff0080 0%, hsl(330, 100%, 85%) 100%);
             --card-bg: rgba(255, 255, 255, 0.95);
         }
-
         body {
             background: linear-gradient(135deg, #ffafdc 0%, #f975d1 100%) fixed !important;
             min-height: 100vh;
