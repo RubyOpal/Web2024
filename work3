@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReactJS Cute Exam App</title>
+
+    <!-- React and Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Bootstrap for styling -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+
+    <!-- Custom Styles for Cute Theme -->
+    <style>
+      body {
+        background-color: #fce4ec; /* Soft pinkish background */
+        font-family: 'Comic Sans MS', cursive, sans-serif;
+      }
+
+      .card {
+        border-radius: 15px;
+        background-color: #fbe9e7; /* Soft pastel pink */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-header {
+        background-color: #ffcccb; /* Pastel pink */
+        color: #e91e63; /* Bold pink text */
+        text-align: center;
+        border-bottom: 2px solid #ff4081;
+        padding: 15px 0;
+      }
+
+      .card-footer {
+        background-color: #ffcccb; /* Pastel pink footer */
+        text-align: center;
+        padding: 1rem;
+        color: #e91e63;
+        border-radius: 0 0 15px 15px;
+      }
+
+      h1, h3, h4, b {
+        color: #e91e63; /* Bold pink text */
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn-primary, .btn-secondary, .btn-success {
+        background-color: #ff80ab; /* Soft pinkish button color */
+        border-color: #ff80ab;
+        font-weight: bold;
+      }
+
+      .btn-primary:hover, .btn-secondary:hover, .btn-success:hover {
+        background-color: #ff4081;
+        border-color: #ff4081;
+      }
+
+      .btn-secondary {
+        background-color: #ffb6c1; /* Light pink */
+        border-color: #ffb6c1;
+      }
+
+      .btn-secondary:hover {
+        background-color: #f06292;
+        border-color: #f06292;
+      }
+
+      .btn-success {
+        background-color: #ff4081; /* Strong pink for success */
+        border-color: #ff4081;
+      }
+
+      .btn-success:hover {
+        background-color: #e91e63;
+        border-color: #e91e63;
+      }
+
+      .question-container {
+        background-color: #fce4ec; /* Very light pink background for questions */
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 10px;
+      }
+
+      .question-container input {
+        margin-right: 10px;
+      }
+
+      .answer-review {
+        background-color: #ffe4e1;
+        padding: 20px;
+        border-radius: 10px;
+      }
+
+      .answer-review b {
+        color: #e91e63;
+      }
+
+      .btn-back {
+        background-color: #ff80ab;
+        color: white;
+      }
+
+      .btn-back:hover {
+        background-color: #ff4081;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="myapp" class="container p-4"></div>
+
+    <script type="text/babel">
+      class App extends React.Component {
+        constructor() {
+          super();
+          this.state = {
+            questions: [], // Empty initially, will load from JSON
+            currentQuestionIndex: 0,
+            answers: {},
+            status: 'menu', // 'menu', 'quiz', 'result'
+            score: 0,
+          };
+        }
+
+      
+        async loadQuizData() {
+          try {
+            const response = await fetch('quiz3.json'); 
+            const data = await response.json();
+            this.setState({ questions: data });
+          } catch (error) {
+            console.error('Error loading quiz data:', error);
+          }
+        }
+
+       
+        startExam = () => {
+          this.setState({ status: 'quiz' });
+        };
+
+        // Select an answer
+        selectAnswer = (questionId, answer) => {
+          this.setState((prevState) => ({
+            answers: {
+              ...prevState.answers,
+              [questionId]: answer,
+            },
+          }));
+        };
+
+        submitExam = () => {
+          let score = 0;
+          this.state.questions.forEach((question) => {
+            if (this.state.answers[question.id] === question.correct) {
+              score += 1;
+            }
+          });
+          this.setState({ score, status: 'result' });
+        };
+
+        
+        goBackToMenu = () => {
+          this.setState({ status: 'menu', score: 0, answers: {}, currentQuestionIndex: 0 });
+        };
+
+       
+        previousQuestion = () => {
+          if (this.state.currentQuestionIndex > 0) {
+            this.setState((prevState) => ({
+              currentQuestionIndex: prevState.currentQuestionIndex - 1,
+            }));
+          }
+        };
+
+        
+        nextQuestion = () => {
+          if (this.state.currentQuestionIndex < this.state.questions.length - 1) {
+            this.setState((prevState) => ({
+              currentQuestionIndex: prevState.currentQuestionIndex + 1,
+            }));
+          }
+        };
+
+        
+        componentDidMount() {
+          this.loadQuizData();
+        }
+
+        render() {
+          const { questions, currentQuestionIndex, answers, status, score } = this.state;
+          const currentQuestion = questions[currentQuestionIndex];
+
+          return (
+            <div className="card">
+              <div className="card-header">
+                <h1><b>Work3 :</b></h1>
+                <h3>แบบทดสอบ ด้วย ReactJS</h3>
+              </div>
+
+              <div className="card-body">
+                {/* Menu Screen */}
+                {status === 'menu' && (
+                  <div>
+                    <h4><b>เริ่มต้นทำแบบทดสอบ</b></h4>
+                    <button className="btn btn-primary" onClick={this.startExam}>
+                      Start Exam
+                    </button>
+                  </div>
+                )}
+
+                {/* Quiz Screen */}
+                {status === 'quiz' && currentQuestion && (
+                  <div>
+                    <div className="question-container">
+                      <h4><b>ข้อที่ {currentQuestionIndex + 1}:</b> {currentQuestion.question}</h4>
+
+                      {currentQuestion.options.map((option, index) => (
+                        <div key={index}>
+                          <input
+                            type="radio"
+                            name={`q${currentQuestion.id}`}
+                            value={option}
+                            checked={answers[currentQuestion.id] === option}
+                            onChange={() => this.selectAnswer(currentQuestion.id, option)}
+                          />
+                          {option}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Navigation Buttons */}
+                    <div className="mt-3">
+                      {/* Previous Button */}
+                      {currentQuestionIndex > 0 && (
+                        <button
+                          className="btn btn-secondary me-2"
+                          onClick={this.previousQuestion}
+                        >
+                          ย้อนกลับ
+                        </button>
+                      )}
+
+                      {/* Next Button */}
+                      {currentQuestionIndex < questions.length - 1 ? (
+                        <button
+                          className="btn btn-secondary me-2"
+                          onClick={this.nextQuestion}
+                        >
+                          ข้อถัดไป
+                        </button>
+                      ) : (
+                        <button className="btn btn-success" onClick={this.submitExam}>
+                          ส่งข้อสอบ
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Result Screen */}
+                {status === 'result' && (
+                  <div>
+                    <h3>Your Score: {score} / {questions.length}</h3>
+                    <div className="answer-review">
+                      <h4><b>Answer Review:</b></h4>
+                      <ul>
+                        {questions.map((question) => (
+                          <li key={question.id}>
+                            <b>ข้อที่ {question.id}:</b> {question.question}
+                            <br />
+                            <b>คำตอบของคุณ:</b> {answers[question.id] || "ไม่ได้เลือกตอบ"}
+                            <br />
+                            <b>คำตอบที่ถูกต้อง:</b> {question.correct}
+                            <br />
+                            <b>ผลลัพธ์:</b> {answers[question.id] === question.correct ? "ถูก" : "ผิด"}
+                            <br /><br />
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <button className="btn btn-back" onClick={this.goBackToMenu}>
+                      กลับไปที่หน้าหลัก
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="card-footer">
+                <div>By 653380218-5 Athitaya Boochakul <br/> College of Computing, Khon Kaen University</div>
+              </div>
+            </div>
+          );
+        }
+      }
+
+      const container = document.getElementById('myapp');
+      const root = ReactDOM.createRoot(container);
+      root.render(<App />);
+    </script>
+  </body>
+</html>
