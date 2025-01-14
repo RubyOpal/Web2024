@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.2/dist/aframe-extras.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-light type="ambient" color="#ffffff" intensity="0.5"></a-light>
+      <a-light type="directional" position="2 4 -2" intensity="1"></a-light>
+      <a-entity gltf-model="kitty.glb" animation-mixer="" position="-1.12761 1.552 -17.51053" rotation="0 -90 0"></a-entity>
+      <a-entity gltf-model="Rio de Janeiro.glb" position="15.333 4.713 -47.758" scale="15 15 15" rotation="0 180 0"></a-entity>
+      <a-entity gltf-model="Orange Vehicle.glb" animation-mixer="" position="6.22926 -0.34805 -21.37841" rotation="" scale="4 4 4"></a-entity>
+      <a-entity gltf-model="Chicken Guy.glb" animation-mixer="" position="-9.08899 -0.04454 -20.82243" rotation="0 90 0"></a-entity>
+      <a-entity gltf-model="Citizen 3.glb" animation-mixer="" position="2.50051 -0.498 -20.47316" rotation="0 270 0"></a-entity>
+     
+      <a-assets>
+        <a-mixin id="text"
+          text="align: center; width: 6; color: black;
+              value: My name is Athitaya Boochakul 653380218-5
+              I'm a 3rd years student at Computer Science Khonkaen University"
+        ></a-mixin>
+      </a-assets>
+      <a-text mixin="text" font="kelsonsans" position="-0.8 -0.67315 -12.22039" wrap-count="80" text="anchor: center; width: 5; color: #000000" scale="5 5 5"></a-text>
+
+      <a-assets>
+        <audio id="river" src="cute-music-26476.mp3" preload="auto"></audio>
+      </a-assets>
+      <a-entity id="river" geometry="primitive: plane" material="color: pink"
+          position="1 -2 -17" sound="src: url(cute-music-26476.mp3); autoplay: true"></a-entity>
+
+    
+  </body>
+</html>
